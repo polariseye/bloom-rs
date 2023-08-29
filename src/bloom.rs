@@ -78,6 +78,10 @@ impl BloomFilter<RandomState, RandomState> {
         let bits = needed_bits(rate,expected_num_items);
         BloomFilter::with_size(bits,optimal_num_hashes(bits,expected_num_items))
     }
+
+    pub fn bits(&self) -> &BitVec {
+        &self.bits
+    }
 }
 
 impl<R,S> BloomFilter<R,S>
