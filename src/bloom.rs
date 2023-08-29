@@ -71,15 +71,6 @@ impl BloomFilter<RandomState, RandomState> {
         }
     }
 
-    pub fn with_bits(bits: &[u8], num_hashes: u32) -> BloomFilter<RandomState, RandomState> {
-        BloomFilter{
-            bits: BitVec::from_bytes(bits),
-            num_hashes: num_hashes,
-            hash_builder_one: RandomState::new(),
-            hash_builder_two: RandomState::new(),
-        }
-    }
-
     /// create a BloomFilter that expects to hold
     /// `expected_num_items`.  The filter will be sized to have a
     /// false positive rate of the value specified in `rate`.
@@ -88,14 +79,27 @@ impl BloomFilter<RandomState, RandomState> {
         BloomFilter::with_size(bits,optimal_num_hashes(bits,expected_num_items))
     }
 
-    pub fn bytes(&self) -> Vec<u8> {
-        self.bits.to_bytes()
+    pub fn with_bits(bits: &[u8], num_hashes: u32) -> BloomFilter<RandomState, RandomState> {
+        BloomFilter{
+            bits: BitVec::from_bytes(bits),
+            num_hashes: num_hashes,
+            hash_builder_one: RandomState::new(),
+            hash_builder_two: RandomState::new(),
+        }
     }
 }
 
 impl<R,S> BloomFilter<R,S>
     where R: BuildHasher, S: BuildHasher
 {
+    pub fn with_bits_hashers(bits: &[u8], num_hashes: u32, hash_builder_one: R, hash_builder_two: S) -> BloomFilter<R,S> {
+        BloomFilter{
+            bits: BitVec::from_bytes(bits),
+            num_hashes: num_hashes,
+            hash_builder_one: hash_builder_one,
+            hash_builder_two: hash_builder_two,
+        }
+    }
 
     /// Create a new BloomFilter with the specified number of bits,
     /// hashes, and the two specified HashBuilders.  Note the the
@@ -137,6 +141,10 @@ impl<R,S> BloomFilter<R,S>
     /// Get the number of hash functions this BloomFilter is using
     pub fn num_hashes(&self) -> u32 {
         self.num_hashes
+    }
+
+    pub fn bytes(&self) -> Vec<u8> {
+        self.bits.to_bytes()
     }
 }
 
