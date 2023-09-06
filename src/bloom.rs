@@ -133,15 +133,6 @@ impl<R,S> BloomFilter<R,S>
                                            hash_builder_one,hash_builder_two)
     }
 
-    pub fn with_bits_and_hashers(bits: &[u8], num_hashes: u32, hash_builder_one: R, hash_builder_two: S) -> BloomFilter<R,S> {
-        BloomFilter{
-            bits: BitVec::from_bytes(bits),
-            num_hashes: num_hashes,
-            hash_builder_one: hash_builder_one,
-            hash_builder_two: hash_builder_two,
-        }
-    }
-
     /// Get the number of bits this BloomFilter is using
     pub fn num_bits(&self) -> usize {
         self.bits.len()
